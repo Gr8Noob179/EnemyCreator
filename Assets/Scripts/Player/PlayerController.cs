@@ -8,18 +8,17 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private GameObject bulletPref;
     [SerializeField] private Transform crosshair;
 
-    [SerializeField] private float rotationOffset = 5.0f;
-
     [SerializeField, Range(0f, 15f)] private float acceleration = 5f;
     [SerializeField, Range(0f, 15f)] private float deceleration = 5f;
     [SerializeField, Range(0f, 25f)] private float maxSpeed = 10f;
     [SerializeField, Range(0f, 0.5f)] private float stopThreshold = 0.1f;
-    [SerializeField] private Vector2 velocity;
-    [SerializeField] private Vector2 desiredVelocity;
 
-    private Rigidbody2D rb;
+    private Vector2 velocity;
+    private Vector2 desiredVelocity;
     private Vector3 lookingDirection;
+
     private float radius = 0.7f;
+    private Rigidbody2D rb;
     // Start is called before the first frame update
     void Start()
     {
@@ -35,7 +34,7 @@ public class PlayerController : MonoBehaviour
         lookingDirection = (mousePosition - transform.position).normalized;
 
         desiredVelocity = new Vector2(inputX, inputY).normalized * maxSpeed;
-        if (Input.GetMouseButtonDown(0)) Shoot(lookingDirection);
+        if (Input.GetMouseButtonUp(0)) Shoot(0.7f);
     }
 
     // Update is called once per frame
@@ -80,19 +79,21 @@ public class PlayerController : MonoBehaviour
                 transform.position.y + radius * Mathf.Sin(desiredAngle), 
                 0
             );
-        crosshair.position = Vector3.Lerp(crosshair.position, dessiredPosition, 25f * Time.fixedDeltaTime);
+        crosshair.position = Vector3.Lerp(crosshair.position, dessiredPosition, 15f * Time.fixedDeltaTime);
 
-        crosshair.rotation = Quaternion.Euler(0, 0, (desiredAngle * Mathf.Rad2Deg) + rotationOffset);
+        crosshair.rotation = Quaternion.Euler(0, 0, (desiredAngle * Mathf.Rad2Deg));
         #endregion
 
     }
 
-    private void Shoot(Vector3 direction)
+    private void Shoot(float fireDelay)
     {
-        float rotationAngle = Mathf.Atan2(lookingDirection.y, lookingDirection.x) * Mathf.Rad2Deg;
+        float rotationAngle = Mathf.Atan2(lookingDirection.y, lookingDirection.x);
 
-        GameObject go = Instantiate(bulletPref, transform.position, Quaternion.Euler(0f, 0f, rotationAngle + 90f));
+        GameObject go = Instantiate(bulletPref, crosshair.position, Quaternion.Euler(0f, 0f, rotationAngle * Mathf.Rad2Deg + 90f));
 
         Destroy(go, 2.5f);
     }
+
+    
 }
