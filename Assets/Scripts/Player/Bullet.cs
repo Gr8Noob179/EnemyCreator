@@ -5,6 +5,7 @@ using UnityEngine.Events;
 
 public class Bullet : MonoBehaviour
 {
+    
     [SerializeField] private Transform gun;
     [SerializeField] private float bulletSpeed = 5f;
     [SerializeField] private float maxSpeed = 17.5f;
@@ -18,7 +19,7 @@ public class Bullet : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         gun = FindObjectOfType<PlayerController>().GetComponentInChildren<Transform>();
-
+        
         Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         lookingPosition = (mousePosition - (Vector2)gun.position).normalized;
     }
